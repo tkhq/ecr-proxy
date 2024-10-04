@@ -30,7 +30,7 @@ RUN find /newroot -newermt "@${SOURCE_DATE_EPOCH}" -writable \
 
 FROM scratch
 
-LABEL org.opencontainers.image.source https://github.com/tkhq/ecr-proxy
+LABEL org.opencontainers.image.source=https://github.com/tkhq/ecr-proxy
 
 COPY --from=builder /newroot /
 
