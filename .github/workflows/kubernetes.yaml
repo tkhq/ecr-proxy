@@ -15,7 +15,7 @@ jobs:
       - name: kustomize build
         run: |
           env -C repo/ kustomize build ./kustomize -o ../manifests.yaml
-      - uses: actions/upload-artifact@ff15f0306b3f739f7b6fd43fb5d26cd321bd4de5 # v3.2.1
+      - uses: actions/upload-artifact@604373da6381bf24206979c74d06a550515601b9 # v4.4.1
         with:
           name: manifests-kustomize
           path: manifests.yaml
@@ -31,7 +31,7 @@ jobs:
           - 1.27.0
       fail-fast: false
     steps:
-      - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+      - uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
         with:
           name: manifests-kustomize
       - uses: docker://ghcr.io/yannh/kubeconform:v0.6.2@sha256:d49b233175b55c18d9a2af5e0b62249c3bc3bdd6161126655b4ad585c4b9b064
