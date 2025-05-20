@@ -51,6 +51,21 @@ spec:
             readOnlyRootFilesystem: true
             runAsNonRoot: true
       serviceAccountName: ecr-proxy
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: DoNotSchedule
+          labelSelector:
+            matchLabels: {}
+          matchLabelKeys:
+            - pod-template-hash
+        - maxSkew: 1
+          topologyKey: topology.kubernetes.io/zone
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels: {}
+          matchLabelKeys:
+            - pod-template-hash
 ---
 apiVersion: v1
 kind: Service
