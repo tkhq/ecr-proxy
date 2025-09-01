@@ -161,11 +161,15 @@ func main() {
 				Handler:  mux,
 			}
 
+			log.Info("listening on HTTPS", zap.String("addr", tlsAddr))
+
 			if err = srv.ServeTLS(secureListener, tlsCert, tlsKey); err != nil {
 				log.Fatal("HTTPS listener exited", zap.Error(err))
 			}
 		}()
 	}
+
+	log.Info("listening on HTTP", zap.String("addr", listenAddr))
 
 	err = http.Serve(l, mux)
 
