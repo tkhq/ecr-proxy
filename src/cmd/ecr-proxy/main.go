@@ -100,7 +100,7 @@ func main() {
 		log.Fatal("failed to create a standard logger for the reverse proxy", zap.Error(err))
 	}
 
-	mux.Handle("/v2/", &httputil.ReverseProxy{
+	reverseProxy := &httputil.ReverseProxy{
 		Director: func(req *http.Request) {
 			if err := addAuthToken(req); err != nil {
 				log.Error("failed to add auth token to request", zap.Error(err))
@@ -115,6 +115,12 @@ func main() {
 
 			http.Error(w, "upstream failure", http.StatusBadGateway)
 		},
+	}
+
+	mux.HandleFunc("/v2/", func(w http.ResponseWriter, req *http.Request) {
+		log.Debug("proxying request", zap.String("url", req.RequestURI))
+
+		reverseProxy.ServeHTTP(w, req)
 	})
 
 	mux.HandleFunc("/health", func(w http.ResponseWriter, req *http.Request) {
