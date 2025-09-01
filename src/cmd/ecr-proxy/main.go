@@ -107,6 +107,14 @@ func main() {
 			}
 		},
 		ErrorLog: proxyLogger,
+		ErrorHandler: func(w http.ResponseWriter, req *http.Request, err error) {
+			log.Debug("request failed",
+				zap.Error(err),
+				zap.String("url", req.RequestURI),
+			)
+
+			http.Error(w, "upstream failure", http.StatusBadGateway)
+		},
 	})
 
 	mux.HandleFunc("/health", func(w http.ResponseWriter, req *http.Request) {
