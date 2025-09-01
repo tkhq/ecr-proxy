@@ -95,12 +95,18 @@ func main() {
 
 	mux := http.NewServeMux()
 
+	proxyLogger, err := zap.NewStdLogAt(log, zap.DebugLevel)
+	if err != nil {
+		log.Fatal("failed to create a standard logger for the reverse proxy", zap.Error(err))
+	}
+
 	mux.Handle("/v2/", &httputil.ReverseProxy{
 		Director: func(req *http.Request) {
 			if err := addAuthToken(req); err != nil {
 				log.Error("failed to add auth token to request", zap.Error(err))
 			}
 		},
+		ErrorLog: proxyLogger,
 	})
 
 	mux.HandleFunc("/health", func(w http.ResponseWriter, req *http.Request) {
