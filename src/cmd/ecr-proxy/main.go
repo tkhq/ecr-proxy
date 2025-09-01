@@ -151,7 +151,12 @@ func main() {
 		}()
 
 		go func() {
-			if err = http.ServeTLS(secureListener, mux, tlsCert, tlsKey); err != nil {
+			srv := &http.Server{
+				ErrorLog:     proxyLogger,
+				Handler:      mux,
+			}
+
+			if err = srv.ServeTLS(secureListener, tlsCert, tlsKey); err != nil {
 				log.Fatal("HTTPS listener exited", zap.Error(err))
 			}
 		}()
