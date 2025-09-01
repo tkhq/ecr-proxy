@@ -95,7 +95,7 @@ func main() {
 
 	mux := http.NewServeMux()
 
-	proxyLogger, err := zap.NewStdLogAt(log, zap.DebugLevel)
+	proxyLogger, err := zap.NewStdLogAt(log.With(zap.String("component", "proxy")), zap.DebugLevel)
 	if err != nil {
 		log.Fatal("failed to create a standard logger for the reverse proxy", zap.Error(err))
 	}
@@ -144,6 +144,11 @@ func main() {
 			log.Fatal("failed to listen on HTTPS port", zap.String("addr", tlsAddr), zap.Error(err))
 		}
 
+		serverLogger, err := zap.NewStdLogAt(log.With(zap.String("component", "server")), zap.DebugLevel)
+		if err != nil {
+			log.Fatal("failed to create a standard logger for the http server", zap.Error(err))
+		}
+
 		go func() {
 			<-ctx.Done()
 
@@ -152,8 +157,8 @@ func main() {
 
 		go func() {
 			srv := &http.Server{
-				ErrorLog:     proxyLogger,
-				Handler:      mux,
+				ErrorLog: serverLogger,
+				Handler:  mux,
 			}
 
 			if err = srv.ServeTLS(secureListener, tlsCert, tlsKey); err != nil {
