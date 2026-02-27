@@ -2,7 +2,7 @@ module github.com/tkhq/ecr-proxy/src
 
 go 1.23
 
-toolchain go1.24.5
+toolchain go1.26.0
 
 require (
 	github.com/aws/aws-sdk-go-v2 v1.39.3
